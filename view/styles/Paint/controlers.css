@@ -1,0 +1,125 @@
+
+.controlers {
+
+    width:100%;
+    height: 10.5%;
+    position: absolute;
+    padding-right: 0;
+    background: #48457d33;
+}
+
+#ruler {
+
+	width: 30px;
+
+}
+
+.icons {
+	width: 15px;
+	height: 15px;
+}
+
+.input_of_paint {
+	margin-left: 10px;
+}
+
+}
+.tools {
+	width: 100%;
+}
+
+#paint_btn_block{
+  width: 2.5%;
+  height: 61%;
+  margin-top: 1%;
+  margin-right: 0%;
+  margin-left: 95.5%;
+  flex-direction: column;
+  display: flex;
+}
+
+.tools_name {
+	margin-left: -15px;
+	width: 100%;
+	position: relative;
+	float: right;
+	padding: 3px;
+	margin: 10px;
+	display: inline-block;
+}
+
+h5 {
+	height: 25px;
+
+}
+
+.icons {
+	padding: 0;
+	margin: 0;
+	width: 15px;
+	height: 15px;
+	float: left;
+}
+
+
+
+
+.ul_of_paint {
+
+	margin: 0;
+
+}
+
+ul.tools {
+  	display: inline-flex;
+  	/* background: #48457d33; */
+    list-style: none;
+    width: 80%;
+    height: 70px;
+    padding-left: 0;
+    padding-right: 0;
+    float: left;
+    /* margin-right: 100px; */
+}
+
+.li_of_paint {
+    color: #fff;
+  	width: 20%;
+    display: block;
+    float: left;
+    padding: 1rem;
+    position: relative;
+    text-decoration: none;
+  	transition-duration: 0.5s;
+}
+
+
+.li_of_paint:hover {
+    /* background: #48457d33; */
+    cursor: pointer;
+}
+
+ul .li_of_paint ul {
+    /* background: #48457d33; */
+    visibility: hidden;
+  	opacity: 0;
+  	min-width: 5rem;
+    position: absolute;
+  	transition: all 0.5s ease;
+  	margin-top: 1rem;
+    left: 0;
+  	display: none;
+}
+
+ul .li_of_paint:hover > ul,
+ul .li_of_paint ul:hover {
+  top: 53px;
+  visibility: visible;
+  opacity: 1;
+  display: block;
+}
+
+ul .li_of_paint ul .li_of_paint  {
+    clear: both;
+  	width: 20%;
+}
