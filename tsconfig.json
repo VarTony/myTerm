@@ -19,6 +19,7 @@
     "noFallthroughCasesInSwitch": false,
     "paths": {
       "@term/*":      [ "src/entities/term/*" ],
+      "@commands/*":   ["src/entities/commands/*"],
       "@connections/*" : ["src/connections/*" ]
     },
   }
