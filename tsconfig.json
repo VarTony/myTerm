@@ -20,6 +20,8 @@
     "paths": {
       "@term/*":      [ "src/entities/term/*" ],
       "@commands/*":   ["src/entities/commands/*"],
+      "@user/*":   ["src/entities/user/*"],
+      "@entities/*":   ["src/entities/*"],
       "@connections/*" : ["src/connections/*" ]
     },
   }

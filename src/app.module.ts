@@ -2,9 +2,8 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
-import { TermModule } from '@term/index';
 import { RedisModule } from '@connections/index';
-import { CommandsModule } from '@commands/index';
+import { UserModule, TermModule } from '@entities/index';
 const path = require('path');
 
 @Module({
@@ -17,10 +16,10 @@ const path = require('path');
     isGlobal: true 
   }),
     RedisModule,
-    CommandsModule,
-    TermModule
+    TermModule,
+    UserModule
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [ AppController ],
+  providers: [ AppService ],
 })
 export class AppModule {}
