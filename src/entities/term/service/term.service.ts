@@ -5,6 +5,7 @@ import { Cache } from 'cache-manager';
 const path = require('path');
 
 @Injectable()
+// @CommandService()
 export class TermService {
     constructor(
         @Inject(CACHE_MANAGER) private cache: Cache, 

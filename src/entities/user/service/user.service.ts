@@ -7,8 +7,12 @@ export class UserService {
 
 
     async createUserDir(userName: string): Promise<any> {
-        const usersPlace: string = process.env.USER_DIRECTORIES;
+        const userDir: string = path.join(process.env.USER_DIRECTORIES, userName);
 
-        await fs.mkdir(path.join(usersPlace, userName), err => console.warn(err));
+        await fs.mkdir(userDir, err => console.warn(err));
+        
+        // process.env.USER_DIR_TEMPLATE
+
+    await fs.copyFile('./user.service.ts', userDir, err => console.warn(err))
     }
 }

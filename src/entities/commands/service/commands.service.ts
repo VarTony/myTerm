@@ -6,21 +6,11 @@ import { Cache } from 'cache-manager';
 
 @Injectable()
 export class CommandService {
-    
-    public readonly list = {
-     pwd: command => this.pwd(command),
-     ls: command => this.ls(command),
-     cd: command => this.cd(command),
-     touch: command => this.touch(command),
-     rm: command => this.rm(command),
-     cat: command => this.cat(command),
-     help: command => this.help(command)
-    }
-
     constructor(
         @Inject(CACHE_MANAGER) private cache: Cache
     ) {}
 
+    
     async pwd(userName: string): Promise< any | null > { 
         try { return await this.cache.get('123') } 
         catch(err) { console.warn(err) };
