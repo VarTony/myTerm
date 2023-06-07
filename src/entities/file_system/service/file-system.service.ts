@@ -38,9 +38,9 @@ export class FileSystemService {
 
 
     /**
-     * Читает директорию, выдает список файлов и поддерикторий, не читает вглубь.
+     * Плоское чтение директории
      * 
-     * @param dirPath: путь до дериктории которую нужно прочитать.
+     * @param dirPath: путь до директории которую нужно прочитать.
      * @returns 
      */
     async readDir(dirPath: string): Promise<any> {
