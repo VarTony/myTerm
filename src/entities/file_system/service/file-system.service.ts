@@ -5,7 +5,6 @@ import * as path from 'path';
 
 @Injectable()
 export class FileSystemService {
-    
     /**
      * Путь в корень проекта;
      */
@@ -45,7 +44,7 @@ export class FileSystemService {
     async readDirRecursive(dirPath: string): Promise<any> {
         const files = await this.readDir(dirPath, true);
         const dirTree = await files.reduce( async(promisedTree: any, file: string) => {
-            // Ждем пока выполнется обещание для корректной работы при следующей итерации.
+            // Ждем пока выполнется предыдущие обещание для корректной работы в следующем цикле.
             const tree = await promisedTree;
         
             return await this.isFile(file)
@@ -77,7 +76,7 @@ export class FileSystemService {
 
     /**
      * Отделяет локальное имя файла.
-     * Отрезает концевик пути.
+     * (Отрезает концевик пути).
      * 
      * @param filepath 
      * @returns 

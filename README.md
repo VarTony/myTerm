@@ -8,7 +8,7 @@
 
 
 ## Description
-My Terninal
+Remake of the old project that was written in Express.js.
 
 ## Installation
 
