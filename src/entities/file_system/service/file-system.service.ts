@@ -44,15 +44,14 @@ export class FileSystemService {
      */
     async readDirRecursive(dirPath: string): Promise<any> {
         const files = await this.readDir(dirPath, true);
-        const dirTree = await files.reduce( async(tree: {}, file: string) => {
-            // Обертка позволяющая корректно работать с обещаниями при итерации.
-            const treeWrap = await tree;
+        const dirTree = await files.reduce( async(promisedTree: any, file: string) => {
+            // Ждем пока выполнется обещание для корректной работы при следующей итерации.
+            const tree = await promisedTree;
         
             return await this.isFile(file)
-              ? ({...treeWrap, [ this.localPath(file) ]: 'file' })
-              : ({...treeWrap, [ this.localPath(file) ]: (await this.readDirRecursive(file)) })
-         }, Promise.resolve({})); 
-         // Promise.resolve - если не добавить, при следующем цикле вернется обещание.
+              ? ({...tree, [ this.localPath(file) ]: 'file' })
+              : ({...tree, [ this.localPath(file) ]: (await this.readDirRecursive(file)) })
+         },  {});
 
         return dirTree;
     }
