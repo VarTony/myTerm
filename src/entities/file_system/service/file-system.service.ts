@@ -1,22 +1,58 @@
 import { Injectable } from '@nestjs/common';
-import * as fs from 'fs';
+import * as fs from 'fs/promises';
+import * as path from 'path';
 
 
 @Injectable()
 export class FileSystemService {
+    
+    /**
+     * Путь в корень проекта;
+     */
+    private readonly __rootname = __dirname
+     .split('/')
+     .slice(0, -4)
+     .join('/');
+
+
+    /**
+     * Плоское чтение директории
+     * 
+     * @param dirPath: путь до директории которую нужно прочитать.
+     * @returns 
+     */
+    async readDir(path: string, isInnerUse: boolean = false): Promise<any> {
+        let files: any;
+        try {
+            files = (await fs.readdir(this.fullPath(path)))
+             .map(fileName => isInnerUse
+                ? this.fullPath(fileName, [ path ])
+                : fileName)
+        } catch(err) {
+            console.warn(err);
+            files = 'Что-то пошло не так.';
+        }
+        return files;
+    }
+
 
     /**
      * Глубокое чтение директории.
+     * Возвращает n-ое дерево каталогов и файлов.
      * 
      * @param dirPath 
      */
-    async readDirRecursive(dirPath: string) {
-        const files = await this.readDir(dirPath);
-        const dirTree = await files.reduce( async(tree: {}, file: string) => 
-         await this.isFile(file)
-            ? ({...tree, [ file ]: 'file' })
-            : ({...tree, [file]: (await this.readDirRecursive(file)) })
-        , {});
+    async readDirRecursive(dirPath: string): Promise<any> {
+        const files = await this.readDir(dirPath, true);
+        const dirTree = await files.reduce( async(tree: {}, file: string) => {
+            // Обертка позволяющая корректно работать с обещаниями при итерации.
+            const treeWrap = await tree;
+        
+            return await this.isFile(file)
+              ? ({...treeWrap, [ this.localPath(file) ]: 'file' })
+              : ({...treeWrap, [ this.localPath(file) ]: (await this.readDirRecursive(file)) })
+         }, Promise.resolve({})); 
+         // Promise.resolve - если не добавить, при следующем цикле вернется обещание.
 
         return dirTree;
     }
@@ -29,26 +65,44 @@ export class FileSystemService {
      * @returns 
      */
     private async isFile(path: string): Promise<any> {
-        const result: any = await fs.stat(path, (err, stat) => { 
-            if(err) console.warn(err);
-            return stat.isFile();
-        });
+        let result: any;
+        try {
+            result = (await fs.stat(path)).isFile();
+        } catch(err) {
+            console.warn(err);
+            result = 'Что-то пошло не так';
+        }
         return result;
     }
 
 
     /**
-     * Плоское чтение директории
+     * Отделяет локальное имя файла.
+     * Отрезает концевик пути.
      * 
-     * @param dirPath: путь до директории которую нужно прочитать.
+     * @param filepath 
      * @returns 
      */
-    async readDir(dirPath: string): Promise<any> {
-        const files: any = await fs.readdir(dirPath, (err, fileList) => {
-            if(err) console.warn(err);
-            return fileList;
-        }); 
-        return files;
+    localPath(filepath: string) {
+        return filepath.split('/').slice(-1).join('');
     }
 
+
+    /**
+     * Формирует абсолютный путь к файлу
+     * Если переданы дополнительные аргументы добавляет их перед или после
+     *  обертываемого файла. 
+     * 
+     * @param filepath 
+     * @returns 
+     */
+    fullPath(filepath: string, prev?: Array<string>, last?: Array<string> ): string {
+        // Дополнительный блок, для кастомизации путей при необходимости
+        if(prev) filepath = `${ prev.join('/') }/${ filepath }`;
+        if(last) filepath = `${ filepath }/${ prev.join('/') }`;
+
+        return filepath.includes(this.__rootname) 
+            ? filepath
+            : path.join(this.__rootname, filepath)
+    }
 }

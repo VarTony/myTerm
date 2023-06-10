@@ -1,16 +1,19 @@
 import { Inject, Injectable } from "@nestjs/common";
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
+import { FileSystemService } from "@fileSystem/index";
 // const path = require('path');
 // const fs = require('fs');
 
 @Injectable()
 export class CommandService {
     constructor(
-        @Inject(CACHE_MANAGER) private cache: Cache
+        @Inject(CACHE_MANAGER) 
+        private cache: Cache,
+        private readonly fileSystem: FileSystemService
     ) {}
 
-    
+
     async pwd(userName: string): Promise< any | null > { 
         try { return await this.cache.get('123') } 
         catch(err) { console.warn(err) };
@@ -19,15 +22,19 @@ export class CommandService {
     }
 
 
-    private async ls(userName: string) { }
+    async ls(userName: string) { 
+        const filePath = '/src/entities';
 
-    private async cd(userName: string) { }
+        return await this.fileSystem.readDirRecursive(filePath);
+    }
 
-    private async touch(userName: string) { }
+    async cd(userName: string) { }
 
-    private async rm(userName: string) { }
+    async touch(userName: string) { }
 
-    private async cat(userName: string) { }
+    async rm(userName: string) { }
 
-    private async help(userName: string) {}
+    async cat(userName: string) { }
+
+    async help(userName: string) {}
 } 
