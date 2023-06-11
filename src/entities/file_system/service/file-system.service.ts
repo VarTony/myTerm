@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import * as fs from 'fs/promises';
-import * as path from 'path';
+import * as pathModule from 'path';
 
 
 @Injectable()
@@ -41,18 +41,68 @@ export class FileSystemService {
      * 
      * @param dirPath 
      */
-    async readDirRecursive(dirPath: string): Promise<any> {
-        const files = await this.readDir(dirPath, true);
+    async readDirRecursive(path: string, isInnerUse: boolean = false ): Promise<any> {
+        const pathHandler = isInnerUse 
+            ? (path) => this.fullPath(path)
+            : (path) => this.localPath(path);
+
+        const files = await this.readDir(path, true);
         const dirTree = await files.reduce( async(promisedTree: any, file: string) => {
             // Ждем пока выполнется предыдущие обещание для корректной работы в следующем цикле.
             const tree = await promisedTree;
         
             return await this.isFile(file)
-              ? ({...tree, [ this.localPath(file) ]: 'file' })
-              : ({...tree, [ this.localPath(file) ]: (await this.readDirRecursive(file)) })
+              ? ({...tree, [ pathHandler(file) ]: 'file' })
+              : ({...tree, [ pathHandler(file) ]: (await this.readDirRecursive(file, isInnerUse)) })
          },  {});
 
         return dirTree;
+    }
+
+
+    /**
+     * 
+     * 
+     * 
+     * @param path 
+     * 
+     */
+    async removeFile(path: string) {
+        let result; 
+        try {
+            fs.unlink(path);
+            result = `Файл был успешно удален: ${ path }`;
+        } catch(err) {
+            console.warn(path);
+            result = `Не удалось удалить файл: ${ path }`;
+        }
+        return result;
+    }
+
+
+    /**
+     * 
+     * 
+     * 
+     * @param path 
+     */
+    async removeDir(path: string) {
+        const dirStructure = await this.readDirRecursive(path, true);
+        const result = await Object.keys(dirStructure).forEach( async(filename: string) => {
+            if(dirStructure[filename] === 'file') {
+                try {
+                    await this.removeFile(filename);
+                    dirStructure[filename] = 'removed';
+                } catch(err) {
+                    console.warn(err);
+                }
+            }
+        return dirStructure;
+        })
+
+
+
+
     }
 
 
@@ -76,13 +126,15 @@ export class FileSystemService {
 
     /**
      * Отделяет локальное имя файла.
-     * (Отрезает концевик пути).
+     * Отрезает концевик пути(по умолчанию) либо внутриний путь в приложении.
      * 
      * @param filepath 
      * @returns 
      */
-    localPath(filepath: string) {
-        return filepath.split('/').slice(-1).join('');
+    localPath(filepath: string, isRelToRoot: boolean = false) {
+        return isRelToRoot
+        ? filepath.slice(this.__rootname.length)
+        : filepath.split('/').slice(-1).join('');
     }
 
 
@@ -94,13 +146,13 @@ export class FileSystemService {
      * @param filepath 
      * @returns 
      */
-    fullPath(filepath: string, prev?: Array<string>, last?: Array<string> ): string {
+    fullPath(path: string, prev?: Array<string>, last?: Array<string> ): string {
         // Дополнительный блок, для кастомизации путей при необходимости
-        if(prev) filepath = `${ prev.join('/') }/${ filepath }`;
-        if(last) filepath = `${ filepath }/${ prev.join('/') }`;
+        if(prev) path = `${ prev.join('/') }/${ path }`;
+        if(last) path = `${ path }/${ prev.join('/') }`;
 
-        return filepath.includes(this.__rootname) 
-            ? filepath
-            : path.join(this.__rootname, filepath)
+        return path.includes(this.__rootname) 
+            ? path
+            : pathModule.join(this.__rootname, path)
     }
 }
