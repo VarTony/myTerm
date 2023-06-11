@@ -8,6 +8,6 @@ type touchOptions = '';
 type cpOptions = '';
 
 
-type helpCommand = 'cp' | 'cd' | 'ls' | 'cat' | 'rm' | 'mkdir' | 'touch';
+type helpCommand = 'cp' | 'cd' | 'ls' | 'cat' | 'rm' | 'mkdir' | 'touch' | 'help';
 
 export { helpCommand }

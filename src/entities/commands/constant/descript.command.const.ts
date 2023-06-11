@@ -133,6 +133,8 @@ const helpDesc = {
 
         ${ cdDesc }
 
+        ${ pwdDesc }
+
         ${ cpDesc }
 
         ${ catDesc }
@@ -152,6 +154,7 @@ const helpDesc = {
 
 const descripionCommands = {
     help: helpDesc,
+    pwd: pwdDesc,
     cd: cdDesc,
     cp: cpDesc,
     cat: catDesc,

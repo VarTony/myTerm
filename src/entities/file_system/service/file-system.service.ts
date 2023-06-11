@@ -21,17 +21,18 @@ export class FileSystemService {
      * @returns 
      */
     async readDir(path: string, isInnerUse: boolean = false): Promise<any> {
-        let files: any;
+        let result: any;
         try {
-            files = (await fs.readdir(this.fullPath(path)))
+            result = (await fs.readdir(this.fullPath(path)))
              .map(fileName => isInnerUse
                 ? this.fullPath(fileName, [ path ])
                 : fileName)
         } catch(err) {
             console.warn(err);
-            files = 'Что-то пошло не так.';
+            result = `Не удалось прочитать директорию: ${ this.localPath(path, true) }`;
+            err.reason = result;
         }
-        return files;
+        return result;
     }
 
 
@@ -118,7 +119,8 @@ export class FileSystemService {
             result = (await fs.stat(path)).isFile();
         } catch(err) {
             console.warn(err);
-            result = 'Что-то пошло не так';
+            result = `Не удалось определить тип файла: ${ this.localPath(path, true) }`;
+            err.reason = result;
         }
         return result;
     }
