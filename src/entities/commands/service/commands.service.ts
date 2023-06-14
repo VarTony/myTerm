@@ -2,8 +2,8 @@ import { Inject, Injectable } from "@nestjs/common";
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
 import { FileSystemService } from "@fileSystem/index";
-import { helpCommand } from "@commands/types";
-import { descripionCommands } from "@commands/constant";
+import { helpCommand } from "../types";
+import { descripionCommands } from "../constant";
 // const path = require('path');
 // const fs = require('fs');
 

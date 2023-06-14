@@ -62,11 +62,10 @@ export class FileSystemService {
 
 
     /**
-     * 
+     * Удаление файла.
      * 
      * 
      * @param path 
-     * 
      */
     async removeFile(path: string) {
         let result; 
@@ -82,28 +81,36 @@ export class FileSystemService {
 
 
     /**
+     * Рекурсивное удаление директории.
      * 
-     * 
-     * 
+     * @param isTree
      * @param path 
      */
-    async removeDir(path: string) {
-        const dirStructure = await this.readDirRecursive(path, true);
-        const result = await Object.keys(dirStructure).forEach( async(filename: string) => {
-            if(dirStructure[filename] === 'file') {
-                try {
-                    await this.removeFile(filename);
-                    dirStructure[filename] = 'removed';
-                } catch(err) {
-                    console.warn(err);
-                }
-            }
-        return dirStructure;
-        })
+    async removeDir(path: string, isTree: boolean = false ) {
+        let result;
+        try {
+            const listRemoved = [];
+            const dirStructure = await this.readDirRecursive(path, true);
+            const onlyDirs = [];
+
+            await Object.keys(dirStructure).forEach( async(filename: string) => {
+                if(dirStructure[filename] === 'file') {
+                    listRemoved.push(await this.removeFile(filename));
+                    dirStructure[ filename ] = 'removed';
+                } 
+                else onlyDirs.push(filename);
+            });
+            await onlyDirs.reverse().forEach(dirpath => fs.rmdir(dirpath));
+            
+            result = isTree ? dirStructure : listRemoved;
 
 
-
-
+        } catch(err) {
+            console.warn(err);
+            result = `Не удалось удалить директорию: ${ path }`;
+            err.reason = result;
+        }
+        return result;
     }
 
 
