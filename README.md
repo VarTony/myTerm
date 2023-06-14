@@ -10,10 +10,10 @@
 ## Description
 Remake of the old project that was written in Express.js.
 
-## Installation
+## INSTALLATION (CLONE BY HTTPS):
 
 ```bash
-$ npm install
+https://github.com/VarTony/myTerm.git
 ```
 
 ## Running the app
