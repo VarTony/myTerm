@@ -13,7 +13,7 @@ Remake of the old project that was written in Express.js.
 ## Installation (Clone by HTTPS):
 
 ```bash
-https://github.com/VarTony/myTerm.git
+git clone 'https://github.com/VarTony/myTerm.git'
 ```
 
 ## Running the app
