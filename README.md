@@ -10,7 +10,7 @@
 ## Description
 Remake of the old project that was written in Express.js.
 
-## INSTALLATION (CLONE BY HTTPS):
+## Installation (Clone by HTTPS):
 
 ```bash
 https://github.com/VarTony/myTerm.git
