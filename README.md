@@ -8,6 +8,7 @@
 
 
 ## Description
+(В разработке)
 Remake of the old project that was written in Express.js.
 
 ## Installation (Clone by HTTPS):
