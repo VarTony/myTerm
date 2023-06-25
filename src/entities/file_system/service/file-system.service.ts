@@ -225,6 +225,26 @@ export class FileSystemService {
         return result;
     }
 
+    
+    /**
+     * Создает файл с заданным именем.
+     * 
+     * @param fileName 
+     * @returns 
+     */
+    async createFile(filepath: string, data?: string): Promise<string> {
+    let result: string;
+    try {
+        await fs.appendFile(filepath, data ? data : '');
+        result = `Был создан файл ${ filepath }`;
+    } catch(err) {
+        console.warn(err);
+        result = `Не удалось создать файл ${ filepath }`;
+        err.reason = result;
+    }
+    return result;
+}
+
 
     /**
      * Cоздание директории пользователя.
