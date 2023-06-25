@@ -56,7 +56,7 @@ export class CommandService {
      * @param option 
      * @returns 
      */
-    async ls(userName: string, argument: string = '', option?: '') { 
+    async ls(argument: string = '', option?: '') { 
         const filePath = '/src/entities'; // test arg
 
         let result;
@@ -77,13 +77,13 @@ export class CommandService {
      * @param pathTo 
      * @returns 
      */
-    async cp(copiedFile: string, pathTo: string): Promise<string> { 
+    async cp(filepath: string, pathTo: string): Promise<string> { 
         let result: string;
         try {
-           const isFile = await this.fileSystem.isFile(copiedFile);
-           result = isFile 
-                ? await this.fileSystem.copyFile(copiedFile, pathTo) 
-                : await this.fileSystem.copyDir(copiedFile, pathTo);
+           const isFile = await this.fileSystem.isFile(filepath);
+           result = isFile
+                ? await this.fileSystem.copyFile(filepath, pathTo) 
+                : await this.fileSystem.copyDir(filepath, pathTo);
         } catch (err) {
             console.warn(err);
             result = err.reason;
@@ -91,13 +91,32 @@ export class CommandService {
         return result;
     }
 
+    
+    /**
+     * Аналог команды удаления, из командной оболочки unix.
+     * 
+     * @param userName 
+     */
+    async rm(filepath: string) {
+        let result: string;
+        try {
+            const isFile =  await this.fileSystem.isFile(filepath);
+            result = isFile 
+                ? await this.fileSystem.removeFile(filepath)
+                : await this.fileSystem.removeDir(filepath);
+        } catch(err) {
+            console.warn(err);
+            result = err.reason;
+        }
+        return result;
+    }
+
+
     async cd(userName: string) { }
 
     async mkdir(userName: string) { }
 
     async touch(userName: string) { }
-
-    async rm(userName: string) { }
 
     async cat(userName: string) { }
 } 
