@@ -111,7 +111,7 @@ export class CommandService {
         return result;
     }
 
-    
+
     /**
      * Аналог mkdir, командной оболочки unix.
      * 
@@ -129,7 +129,22 @@ export class CommandService {
         return result;
     }
 
-    async touch(userName: string) { }
+
+    /**
+     * (Урезанный) Аналог touch, командной оболочки unix.
+     * 
+     * @param filepath 
+     */
+    async touch(filepath: string) { 
+        let result: string;
+        try {
+            result = await this.fileSystem.createFile(filepath);
+        } catch(err) {
+            console.warn(err);
+            result = err.reason;
+        }
+        return result;
+    }
 
     async cd(userName: string) { }
 
