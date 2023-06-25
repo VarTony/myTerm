@@ -68,7 +68,7 @@ export class FileSystemService {
      * @param path 
      */
     async removeFile(path: string) {
-        let result; 
+        let result;
         try {
             fs.unlink(path);
             result = `Файл был успешно удален: ${ path }`;
@@ -121,7 +121,7 @@ export class FileSystemService {
      * @returns 
      */
     private async isFile(path: string): Promise<any> {
-        let result: any;
+        let result: unknown;
         try {
             result = (await fs.stat(path)).isFile();
         } catch(err) {
@@ -164,4 +164,50 @@ export class FileSystemService {
             ? path
             : pathModule.join(this.__rootname, path)
     }
+
+
+    /**
+     * Копирует нужный файл, по переданому вторым параметром пути.
+     * 
+     * @param copiedFile 
+     * @param pathTo 
+     */
+    async copyFile(copiedFile: string, pathTo: string) {
+        let result;
+        try {
+            const copiedData = fs.readFile(copiedFile);
+
+
+        } catch(err) {
+            console.warn(err);
+        }
+    }
+
+
+    /**
+     * Создает директорию с заданым именем.
+     * 
+     * @param dirName 
+     * @returns 
+     */
+    async createDir(dirName: string): Promise<string> {
+        let result: string;
+        try{
+            fs.mkdir(dirName);
+            result = `Cоздана директория - ${ dirName }`;
+        } catch(err) {
+            console.warn(err);
+            result = `Не удалось создать директорию = ${ err }`;
+            err.reason = result;
+        }
+        return result;
+    }
+
+
+    /**
+     * Cоздание директории пользователя.
+     * 
+     * @param userId 
+     */
+    async createUserDir(userId: string) {}
 }
