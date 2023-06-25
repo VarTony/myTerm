@@ -120,8 +120,8 @@ export class FileSystemService {
      * @param path 
      * @returns 
      */
-    private async isFile(path: string): Promise<any> {
-        let result: unknown;
+    async isFile(path: string): Promise<boolean | string> {
+        let result: boolean | string;
         try {
             result = (await fs.stat(path)).isFile();
         } catch(err) {
@@ -216,10 +216,10 @@ export class FileSystemService {
         let result: string;
         try{
             fs.mkdir(dirName);
-            result = `Cоздана директория - ${ dirName }`;
+            result = `Cоздана директория ${ dirName }`;
         } catch(err) {
             console.warn(err);
-            result = `Не удалось создать директорию = ${ err }`;
+            result = `Не удалось создать директорию ${ err }`;
             err.reason = result;
         }
         return result;

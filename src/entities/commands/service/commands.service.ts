@@ -19,7 +19,6 @@ export class CommandService {
     /**
      * Команда вывода общей справки или дополнительной информации по командам.
      * 
-     * 
      * @param command 
      * @returns
      */
@@ -52,7 +51,6 @@ export class CommandService {
     /**
      * Команда чтения каталога.
      * 
-     * 
      * @param userName 
      * @param argument 
      * @param option 
@@ -71,6 +69,27 @@ export class CommandService {
         return result;
     }
 
+
+    /**
+     * Аналог команды cp командной оболочки unix.
+     * 
+     * @param copiedFile 
+     * @param pathTo 
+     * @returns 
+     */
+    async cp(copiedFile: string, pathTo: string): Promise<string> { 
+        let result: string;
+        try {
+           const isFile = await this.fileSystem.isFile(copiedFile);
+           result = isFile 
+                ? await this.fileSystem.copyFile(copiedFile, pathTo) 
+                : await this.fileSystem.copyDir(copiedFile, pathTo);
+        } catch (err) {
+            console.warn(err);
+            result = err.reason;
+        }
+        return result;
+    }
 
     async cd(userName: string) { }
 
