@@ -28,7 +28,7 @@ export class CommandService {
 
 
     /**
-     * Команда вывода текущей рабочей директории.
+     * Аналог pwd, командной оболочки unix.
      * 
      * @param userName 
      * @returns 
@@ -49,7 +49,7 @@ export class CommandService {
 
 
     /**
-     * Команда чтения каталога.
+     *  Аналог ls, командной оболочки unix.
      * 
      * @param userName 
      * @param argument 
@@ -71,7 +71,7 @@ export class CommandService {
 
 
     /**
-     * Аналог команды cp командной оболочки unix.
+     * Аналог cp, командной оболочки unix.
      * 
      * @param copiedFile 
      * @param pathTo 
@@ -91,9 +91,9 @@ export class CommandService {
         return result;
     }
 
-    
+
     /**
-     * Аналог команды удаления, из командной оболочки unix.
+     * Аналог rm, командной оболочки unix.
      * 
      * @param userName 
      */
@@ -111,12 +111,27 @@ export class CommandService {
         return result;
     }
 
-
-    async cd(userName: string) { }
-
-    async mkdir(userName: string) { }
+    
+    /**
+     * Аналог mkdir, командной оболочки unix.
+     * 
+     * @param dirpath 
+     * @returns 
+     */
+    async mkdir(dirpath: string): Promise<string> {
+        let result: string;
+        try {
+            result = await this.fileSystem.createDir(dirpath);
+        } catch(err) {
+            console.warn(err);
+            result = err.reason;
+        }
+        return result;
+    }
 
     async touch(userName: string) { }
+
+    async cd(userName: string) { }
 
     async cat(userName: string) { }
 } 
