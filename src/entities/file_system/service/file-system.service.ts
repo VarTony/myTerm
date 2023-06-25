@@ -167,20 +167,42 @@ export class FileSystemService {
 
 
     /**
+     * Копирует нужную директорию, по переданому вторым параметром пути.
+     * 
+     * @param copiedFile 
+     * @param pathTo 
+     */
+    async copyDir(copiedDir: string, pathTo: string) {
+        let result: string;
+        try {
+            fs.cp(copiedDir, pathTo, {recursive: true});
+            result = `Файл ${ copiedDir } скопирован в ${ pathTo }`;
+        } catch(err) {
+            console.warn(err);
+            result = `Не удалость скопировать файл ${ copiedDir }`;
+            err.reason = result;
+        }
+        return result;
+    }
+
+
+    /**
      * Копирует нужный файл, по переданому вторым параметром пути.
      * 
      * @param copiedFile 
      * @param pathTo 
      */
     async copyFile(copiedFile: string, pathTo: string) {
-        let result;
+        let result: string;
         try {
-            const copiedData = fs.readFile(copiedFile);
-
-
+            fs.cp(copiedFile, pathTo);
+            result = `Файл ${ copiedFile } скопирован в ${ pathTo }`;
         } catch(err) {
             console.warn(err);
+            result = `Не удалость скопировать файл ${ copiedFile }`;
+            err.reason = result;
         }
+        return result;
     }
 
 
