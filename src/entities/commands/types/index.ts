@@ -1,3 +1,3 @@
-import { helpCommand } from "./service.types";
+import { helpCommand, catOptions, commandsOptions } from "./service.types";
 
-export { helpCommand };
+export { helpCommand, catOptions, commandsOptions };

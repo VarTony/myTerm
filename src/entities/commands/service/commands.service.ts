@@ -4,6 +4,7 @@ import { Cache } from 'cache-manager';
 import { FileSystemService } from "@fileSystem/index";
 import { helpCommand } from "../types";
 import { descripionCommands } from "../constant";
+import { bufferEncoding, streamsCallbackPack } from "@fileSystem/types";
 // const path = require('path');
 // const fs = require('fs');
 
@@ -45,6 +46,16 @@ export class CommandService {
         };
         
         return result;
+    }
+
+
+    /**
+     * Аналог cat, командной оболочки unix.
+     * 
+     * @param filepath 
+     */
+    async cat(filepath: string,  encoding: bufferEncoding = 'utf8', callbacks?: streamsCallbackPack) { 
+        await this.fileSystem.readFile(filepath, encoding, callbacks);
     }
 
 
@@ -148,5 +159,4 @@ export class CommandService {
 
     async cd(userName: string) { }
 
-    async cat(userName: string) { }
 } 

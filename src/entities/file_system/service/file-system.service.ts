@@ -1,7 +1,10 @@
+import { bufferEncoding, streamsCallbackPack } from '@fileSystem/types';
 import { Injectable } from '@nestjs/common';
-import * as fs from 'fs/promises';
+import * as fs from 'fs';
+import * as fs_promise from 'fs/promises';
 import * as pathModule from 'path';
-
+import { Stream } from 'stream';
+import { buffer } from 'stream/consumers';
 
 @Injectable()
 export class FileSystemService {
@@ -23,7 +26,7 @@ export class FileSystemService {
     async readDir(path: string, isInnerUse: boolean = false): Promise<any> {
         let result: any;
         try {
-            result = (await fs.readdir(this.fullPath(path)))
+            result = (await fs_promise.readdir(this.fullPath(path)))
              .map(fileName => isInnerUse
                 ? this.fullPath(fileName, [ path ])
                 : fileName)
@@ -60,6 +63,19 @@ export class FileSystemService {
         return dirTree;
     }
 
+    
+    /**
+     * Читает файл по переданому пути.
+     * 
+     * @param filepath (chunc) => void
+     */
+    async readFile(filepath: string, encoding: bufferEncoding, callbacks: streamsCallbackPack): Promise<void> { 
+        const stream = fs.createReadStream(filepath, { encoding })
+        stream.on('data', callbacks.cb);
+        stream.on('end', callbacks.cbEnd);
+        stream.on('error', callbacks.cbErr);
+    }
+
 
     /**
      * Удаление файла.
@@ -70,7 +86,7 @@ export class FileSystemService {
     async removeFile(path: string) {
         let result;
         try {
-            fs.unlink(path);
+            fs_promise.unlink(path);
             result = `Файл был успешно удален: ${ path }`;
         } catch(err) {
             console.warn(path);
@@ -100,7 +116,7 @@ export class FileSystemService {
                 } 
                 else onlyDirs.push(filename);
             });
-            await onlyDirs.reverse().forEach(dirpath => fs.rmdir(dirpath));
+            await onlyDirs.reverse().forEach(dirpath => fs_promise.rmdir(dirpath));
             
             result = isTree ? dirStructure : listRemoved;
 
@@ -123,7 +139,7 @@ export class FileSystemService {
     async isFile(path: string): Promise<boolean | string> {
         let result: boolean | string;
         try {
-            result = (await fs.stat(path)).isFile();
+            result = (await fs_promise.stat(path)).isFile();
         } catch(err) {
             console.warn(err);
             result = `Не удалось определить тип файла: ${ this.localPath(path, true) }`;
@@ -175,7 +191,7 @@ export class FileSystemService {
     async copyDir(copiedDir: string, pathTo: string) {
         let result: string;
         try {
-            fs.cp(copiedDir, pathTo, {recursive: true});
+            fs_promise.cp(copiedDir, pathTo, {recursive: true});
             result = `Файл ${ copiedDir } скопирован в ${ pathTo }`;
         } catch(err) {
             console.warn(err);
@@ -195,7 +211,7 @@ export class FileSystemService {
     async copyFile(copiedFile: string, pathTo: string) {
         let result: string;
         try {
-            fs.cp(copiedFile, pathTo);
+            fs_promise.cp(copiedFile, pathTo);
             result = `Файл ${ copiedFile } скопирован в ${ pathTo }`;
         } catch(err) {
             console.warn(err);
@@ -215,7 +231,7 @@ export class FileSystemService {
     async createDir(dirName: string): Promise<string> {
         let result: string;
         try{
-            fs.mkdir(dirName);
+            fs_promise.mkdir(dirName);
             result = `Cоздана директория ${ dirName }`;
         } catch(err) {
             console.warn(err);
@@ -225,7 +241,7 @@ export class FileSystemService {
         return result;
     }
 
-    
+
     /**
      * Создает файл с заданным именем.
      * 
@@ -235,7 +251,7 @@ export class FileSystemService {
     async createFile(filepath: string, data?: string): Promise<string> {
     let result: string;
     try {
-        await fs.appendFile(filepath, data ? data : '');
+        await fs_promise.appendFile(filepath, data ? data : '');
         result = `Был создан файл ${ filepath }`;
     } catch(err) {
         console.warn(err);
